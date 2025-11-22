@@ -12,15 +12,15 @@ app.use(cors());
 app.use(express.json());
 
 // Serve frontend static files
-app.use(express.static(path.join(__dirname, '..', 'Frontend')));
+app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
 // Mount API routes
 app.use('/', authRoutes);
 app.use('/', taskRoutes);
 
-// Fallback - serve index.html
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'Frontend', 'index.html'));
+// Catch-all route for frontend SPA
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
 });
 
-app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
