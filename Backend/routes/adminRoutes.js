@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User'); // Adjust the path to your User model
-const authMiddleware = require('../middleware/authMiddleware'); // Optional for security
+const authMiddleware = require('../controllers/authMiddleware'); // Optional for security
 
 // Route to fetch all users (excluding passwords)
 router.get('/admin/users', authMiddleware, async (req, res) => {
