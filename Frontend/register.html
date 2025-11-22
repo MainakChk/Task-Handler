@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Register — Task Manager</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="auth-body">
+
+<main class="auth-root">
+  <div class="auth-bg left" aria-hidden="true"
+       style="background-image: url('img/pic1.jpg');"></div>
+
+  <div class="auth-card">
+    <div class="brand">
+      <div class="logo">TH</div>
+      <h1>Create account</h1>
+      <p class="muted">Join the futuristic task experience</p>
+    </div>
+
+    <form id="registerForm" class="form">
+      <label class="label">Username</label>
+      <input id="regUsername" class="input" placeholder="Choose a username" required />
+
+      <label class="label">Password</label>
+      <input id="regPassword" type="password" class="input" placeholder="Choose a password" required />
+
+      <label class="label">Confirm password</label>
+      <input id="regPassword2" type="password" class="input" placeholder="Confirm password" required />
+
+      <div class="row">
+        <button type="submit" class="btn primary">Register</button>
+        <button type="button" id="toLogin" class="btn ghost">Back to Login</button>
+      </div>
+
+      <div id="regMsg" class="small muted" style="margin-top:10px"></div>
+    </form>
+
+    <footer class="small muted">Helping you to track To-Do Daily</footer>
+  </div>
+</main>
+
+<script src="script.js"></script>
+<script>
+  // register page wiring (uses functions from script.js)
+  document.getElementById('toLogin').addEventListener('click', ()=> location.href = 'login.html');
+
+  const registerForm = document.getElementById('registerForm');
+  registerForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const u = document.getElementById('regUsername').value.trim();
+    const p = document.getElementById('regPassword').value;
+    const p2 = document.getElementById('regPassword2').value;
+    const msg = document.getElementById('regMsg');
+    msg.textContent = '';
+
+    if (!u || !p) { msg.textContent = 'Enter username and password'; return; }
+    if (p !== p2) { msg.textContent = 'Passwords do not match'; return; }
+
+    try {
+      const res = await fetch('/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: u, password: p })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        msg.textContent = data.error || 'Registration failed';
+        return;
+      }
+      // store user and go to dashboard
+      localStorage.setItem('tm_user', JSON.stringify(data.user));
+      location.href = 'index.html';
+    } catch (err) {
+      console.error(err);
+      msg.textContent = 'Server error — is backend running?';
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login — Task Manager</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="auth-body">
+
+<main class="auth-root">
+  <div class="auth-bg left" aria-hidden="true"
+       style="background-image: url('img/pic2.jpg');"></div>
+
+  <div class="auth-card">
+    <div class="brand">
+      <div class="logo">TH</div>
+      <h1>Welcome back</h1>
+      <p class="muted">Sign in to continue</p>
+    </div>
+
+    <form id="loginForm" class="form">
+      <label class="label">Username</label>
+      <input id="loginUsername" class="input" placeholder="your username" required />
+
+      <label class="label">Password</label>
+      <input id="loginPassword" type="password" class="input" placeholder="your password" required />
+
+      <div class="row">
+        <button type="submit" class="btn primary">Login</button>
+        <button type="button" id="toRegister" class="btn ghost">Register</button>
+      </div>
+
+      <div id="loginMsg" class="small muted" style="margin-top:10px"></div>
+    </form>
+
+    <footer class="small muted">If you already registered, use those credentials; otherwise register a new account.</footer>
+  </div>
+</main>
+
+<script src="script.js"></script>
+<script>
+  // redirect to index if already logged in
+  if (localStorage.getItem('tm_user')) location.href = 'index.html';
+
+  document.getElementById('toRegister').addEventListener('click', ()=> location.href = 'register.html');
+
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const u = document.getElementById('loginUsername').value.trim();
+    const p = document.getElementById('loginPassword').value;
+    const msg = document.getElementById('loginMsg'); msg.textContent = '';
+
+    if (!u || !p) { msg.textContent = 'Enter username and password'; return; }
+
+    try {
+      const res = await fetch('/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: u, password: p })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        msg.textContent = data.error || 'Login failed';
+        return;
+      }
+      // success
+      localStorage.setItem('tm_user', JSON.stringify(data.user));
+      location.href = 'index.html';
+    } catch (err) {
+      console.error(err);
+      msg.textContent = 'Server error — is backend running?';
+    }
+  });
+</script>
+</body>
+</html>

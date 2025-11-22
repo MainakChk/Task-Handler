@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Task Manager — Dashboard</title>
+
+  <!-- Fonts & Chart.js -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="dash-body">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="logo">TH</div>
+      <div class="brand-title">Task Handler</div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-btn active" data-section="dashboard">Dashboard</button>
+      <button class="nav-btn" data-section="tasks">Tasks</button>
+      <button class="nav-btn" data-section="analytics">Analytics</button>
+      <button id="logoutBtn" class="nav-btn">Logout</button>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <header class="topbar">
+      <div class="welcome-area" id="welcomeArea"></div>
+
+      <div class="search-area">
+        <input id="searchInput" placeholder="Search tasks..." class="search" />
+        <select id="filterCategory" class="filter">
+          <option value="all">All categories</option>
+          <option value="work">Work</option>
+          <option value="personal">Personal</option>
+          <option value="study">Study</option>
+        </select>
+        <select id="filterStatus" class="filter">
+          <option value="all">All status</option>
+          <option value="pending">Pending</option>
+          <option value="completed">Completed</option>
+        </select>
+      </div>
+
+      <div class="top-actions">
+        <button id="themeToggle" class="icon-btn">🌙</button>
+        <div id="userBadge" class="user-badge" title="User"></div>
+      </div>
+    </header>
+
+    <!-- Due Filter Row (segmented) + Add form placeholder (will be moved to top by JS) -->
+    <div class="top-controls">
+      <div class="due-filter-row">
+        <div class="due-label">Due:</div>
+        <div id="dueFilter" class="due-segment">
+          <button class="due-btn active" data-value="all">All</button>
+          <button class="due-btn" data-value="today">Today</button>
+          <button class="due-btn" data-value="week">This Week</button>
+          <button class="due-btn" data-value="month">This Month</button>
+        </div>
+      </div>
+      <!-- placeholder for Add panel to be moved above the grid by JS if needed -->
+    </div>
+
+    <!-- Dashboard section (full screen when active) -->
+    <section class="content section-fade active" id="dashboardSection">
+      <div class="grid">
+        <!-- Add / Edit Task (will be moved to top by JS if originally below) -->
+        <div class="panel add-panel">
+          <h3>Add / Edit Task</h3>
+          <form id="taskForm" class="task-form" autocomplete="off">
+            <input id="title" class="input" placeholder="Task Title" required />
+            <textarea id="description" class="input" placeholder="Description (optional)"></textarea>
+
+            <div class="row">
+              <select id="categoryInput" class="input">
+                <option value="work">Work</option>
+                <option value="personal">Personal</option>
+                <option value="study">Study</option>
+              </select>
+
+              <select id="priorityInput" class="input">
+                <option value="high">Priority: High</option>
+                <option value="medium" selected>Priority: Medium</option>
+                <option value="low">Priority: Low</option>
+              </select>
+            </div>
+
+            <div class="row">
+              <input id="dueDate" type="datetime-local" class="input" />
+            </div>
+
+            <div class="row">
+              <button class="btn primary" type="submit">Save</button>
+              <button id="btnClear" class="btn ghost" type="button">Clear</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Stats -->
+        <div class="panel stats">
+          <div class="stat">
+            <div class="label">Total</div>
+            <div id="totalTasks" class="value">0</div>
+          </div>
+          <div class="stat">
+            <div class="label">Completed</div>
+            <div id="completedTasks" class="value">0</div>
+          </div>
+          <div class="stat">
+            <div class="label">Pending</div>
+            <div id="pendingTasks" class="value">0</div>
+          </div>
+          <div class="stat">
+            <div class="label">Due Today</div>
+            <div id="dueToday" class="value">0</div>
+          </div>
+          <div class="stat">
+            <div class="label">Completion Rate</div>
+            <div id="completionRate" class="value">0%</div>
+          </div>
+        </div>
+
+        <!-- Category Chart (dashboard) - will be fullwidth when dashboard active -->
+        <div class="panel chart-panel" id="dashboardChartPanel">
+          <canvas id="categoryChart"></canvas>
+          <div id="legendBox" class="legend"></div>
+        </div>
+
+        <!-- Tasks List -->
+        <div class="panel tasks-panel" id="tasksPanel">
+          <h3>Tasks</h3>
+          <div id="tasksContainer" class="tasks-vertical"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Analytics Section (hidden by default) -->
+    <section class="content section-fade" id="analyticsSection" aria-hidden="true">
+      <div class="grid analytics-grid">
+        <div class="panel chart-panel">
+          <h3>Completion Rate (Bar Chart)</h3>
+          <canvas id="barChart"></canvas>
+        </div>
+        <div class="panel chart-panel">
+          <h3>Category Distribution (Pie Chart)</h3>
+          <canvas id="pieChart"></canvas>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Confirm Modal -->
+  <div id="confirmModal" class="modal hidden">
+    <div class="modal-card">
+      <div id="confirmText">Confirm?</div>
+      <div class="modal-actions">
+        <button id="confirmNo" class="btn ghost">No</button>
+        <button id="confirmYes" class="btn primary">Yes</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

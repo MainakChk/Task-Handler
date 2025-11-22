@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1763664954130,
+    "title": "Workout",
+    "description": "Daily exercise",
+    "category": "personal",
+    "dueDate": "2025-11-21",
+    "status": "pending",
+    "createdAt": "2025-11-20T18:55:54.130Z"
+  }
+]
