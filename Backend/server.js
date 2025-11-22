@@ -20,7 +20,7 @@ app.use('/', taskRoutes);
 
 // Catch-all route for frontend SPA
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/index.html'));
+  res.sendFile(path.join(__dirname, '../Frontend/index.html'));
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
